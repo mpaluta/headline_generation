@@ -1,10 +1,10 @@
-# Code taken from https://github.com/ConstantineLignos/nyt-corpus-reader/blob/master/nytcorpusreader/nyt_parser.py
+# Code adapted and expanded from 
+# https://github.com/ConstantineLignos/nyt-corpus-reader/blob/master/nytcorpusreader/nyt_parser.py
 
 import datetime
-# noinspection PyPep8Naming
 import xml.etree.ElementTree as ET
+from nltk import word_tokenize
 from typing import Sequence, Iterable, Optional, Dict, Any, Union, TextIO
-
 from attr import attrs, attrib, asdict
 
 NO_INDEX_TERMS = 'NO INDEX TERMS FROM NYTIMES'
@@ -12,11 +12,16 @@ NO_INDEX_TERMS = 'NO INDEX TERMS FROM NYTIMES'
 @attrs
 class NYTArticle:
     """
+    Note from original author:
     Parse and store the fields of an NYT Annotated Corpus article.
     Note that due to issues with the original data, descriptors,
     general descriptors, and types of material are lowercased. As
     some types of material mistakenly contain article text, long
     entries or entries containing tags in that field are removed.
+    Additional adds: 
+    * added variables for other XML fields of potential interest 
+    * added a pass_filters function that checks to see if article meets various criteria
+    * added simple_csv_output function that saves the doc to a simplified csv format
     """
 
     docid: str = attrib()
@@ -26,7 +31,7 @@ class NYTArticle:
     general_descriptors: Sequence[str] = attrib()
     types_of_material: Sequence[str] = attrib()
     paragraphs: Sequence[str] = attrib()
-    # Ben added variables
+    # added variables
     summary: Sequence[str] = attrib()
     dateline: Sequence[str] = attrib()
     lede: Sequence[str] = attrib()
@@ -57,7 +62,7 @@ class NYTArticle:
         paragraphs = [p.text for p in root.findall(
             "./body/body.content/*[@class='full_text']/p")]
 
-        # Ben added fields
+        # added fields
         summary = [s.text for s in root.findall("./body/body.head/summary")]
         dateline = [d.text for d in root.findall("./body/body.head/dateline")]
         lede = [l.text for l in root.findall("./body/body.content/block[@class='lead_paragraph']/p")]
@@ -83,6 +88,23 @@ class NYTArticle:
     def as_dict(self) -> Dict[Any, Any]:
         return asdict(self)
 
+    def pass_filters(self):
+        # checks to see if doc meets word count, headline size, non-Obituary filters
+        keep = False
+        if self.wordcount and self.print_hede: # fails filter in cases of empty fields
+            meets_wc = int(self.wordcount) >= 20 and int(self.wordcount) <= 2000 # from Gavrilov et al
+            words = word_tokenize(self.print_hede[0])
+            meets_hede = len(words) >= 3 and len(words) <= 15 # from Gavrilov et al
+            obit = False
+            for description in self.descriptors:
+                if "obituary" in description: 
+                    obit = True
+            keep = meets_wc and meets_hede and not obit
+        return (keep) 
+
+    @classmethod
+    def simple_csv_output(cls, input_file: TextIO) -> 'NYTArticle':
+        return cls.from_element_tree(ET.parse(input_file))
 
 def _clean_descriptors(descriptors: Iterable[str]) -> Sequence[str]:
     """Deduplicate and clean descriptors
