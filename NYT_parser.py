@@ -1,6 +1,8 @@
 # Code adapted and expanded from 
 # https://github.com/ConstantineLignos/nyt-corpus-reader/blob/master/nytcorpusreader/nyt_parser.py
 
+import os
+import csv
 import datetime
 import xml.etree.ElementTree as ET
 from nltk import word_tokenize
@@ -102,9 +104,14 @@ class NYTArticle:
             keep = meets_wc and meets_hede and not obit
         return (keep) 
 
-    @classmethod
-    def simple_csv_output(cls, input_file: TextIO) -> 'NYTArticle':
-        return cls.from_element_tree(ET.parse(input_file))
+    def simple_csv_output(self, dest_folder: str):
+        # This function writes the doc to a csv file with just the needed data
+        # inputs a pathname
+        with open(dest_folder+self.docid+".csv",'w') as resultFile:
+            wr = csv.writer(resultFile)
+            wr.writerow([self.print_hede[0]])
+            wr.writerow([self.paragraphs])
+        return
 
 def _clean_descriptors(descriptors: Iterable[str]) -> Sequence[str]:
     """Deduplicate and clean descriptors
