@@ -70,7 +70,10 @@ class NYTArticle:
         lede = [l.text for l in root.findall("./body/body.content/block[@class='lead_paragraph']/p")]
         print_hede = [ph.text for ph in root.findall("./body[1]/body.head/hedline/hl1")]
         online_hede = [oh.text for oh in root.findall("./body[1]/body.head/hedline/hl2")]
-        section = head.find("./meta[@name='print_section']").get('content')
+        try:
+            section = head.find("./meta[@name='print_section']").get('content')
+        except:
+            section = ''
         wordcount = pubdata.get('item-length')
              
         # Mypy and Pycharm don't understand the attrs __init__ arguments
@@ -90,6 +93,11 @@ class NYTArticle:
     def as_dict(self) -> Dict[Any, Any]:
         return asdict(self)
 
+    def get_meta(self):
+        # grabs meta data to write to the meta log file
+        hede_words = word_tokenize(self.print_hede[0])
+        return(hede_words, self.descriptors, self.wordcount)
+  
     def pass_filters(self):
         # checks to see if doc meets word count, headline size, non-Obituary filters
         keep = False
