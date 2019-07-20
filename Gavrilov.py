@@ -23,9 +23,22 @@ class Gavrilov(text_problems.Text2TextProblem):
     return False
 
   def generate_samples(self, data_dir, tmp_dir, dataset_split):
-    input_train = open(os.path.join(tpm_dir,"inputs.train.txt"), "r")
-    input_target = open(os.path.join(tmp_dir,"inputs.target.txt"), "r")
-    yield {"inputs": input_train, "targets": input_target}
+    # might need a little fudging after pipeline set up but should be close
+    if dataset_split == problem.DatasetSplit.TRAIN:
+      paths = open(os.path.join(tpm_dir,"meta_train.log"), "r")
+    if dataset_split == problem.DatasetSplit.EVAL:
+      paths = open(os.path.join(tpm_dir,"meta_dev.log"), "r")
+    # if dataset_split == problem.DatasetSplit.TEST:
+    #   train_paths = open(os.path.join(tpm_dir,"meta_test.log"), "r")
+    next_line = paths.readlines()
+    next_line_as_list = next_line.split(",")
+    path = next_line_as_list[0] # assuming first element of log file will be path
+    article = NYTArticle.from_file(os.path.join('data', 'nyt', path) # could replace with tmp_dir or data_dir
+    lede = " ".join(article.lede)
+    # body = " ".join(article.paragraphs) # not using for now
+    headline = article.print_hede[0]
+
+    yield {"inputs": lede, "targets": headline}
 
 
   # @property
