@@ -96,7 +96,7 @@ class NYTArticle:
     def get_meta(self):
         # grabs meta data to write to the meta log file
         hede_words = word_tokenize(self.print_hede[0])
-        return(hede_words, self.descriptors, self.wordcount)
+        return(len(hede_words), self.descriptors, self.wordcount)
   
     def pass_filters(self):
         # checks to see if doc meets word count, headline size, non-Obituary filters
