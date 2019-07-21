@@ -7,6 +7,8 @@ import os
 from tensor2tensor.utils import registry
 from tensor2tensor.data_generators import text_problems #, token_generator, EOS
 from tensor2tensor.data_generators import problem
+import pandas as pd
+from .NYT_parser import NYTArticle
 # from tensor2tensor.data_generators import text_encoder
 
 # Define filepaths
@@ -35,15 +37,15 @@ class Gavrilov(text_problems.Text2TextProblem):
     if dataset_split == problem.DatasetSplit.EVAL:
       paths = open(os.path.join(log_path,"meta_dev.log"), "r")
 
-  data_df = pd.read_csv(paths, sep=",", header=0,
+    data_df = pd.read_csv(paths, sep=",", header=0,
                 dtype={'filepath': str,'hede_size': int,'wordcount': int,'section': str, 'sent_hede': float, 'sent_lede': float, 'sent_body': float})
-  for index, row in data_df.iterrows():
-     filepath = row['filepath']
-     article = NYTArticle.from_file(os.path.join(nyt_path, filepath))
-     lede = " ".join(article.lede)
-     body = " ".join(article.paragraphs[:GRAF_LIMIT]) 
-     headline = article.print_hede[0]
-     yield {"inputs": body, "targets": headline}
+    for index, row in data_df.iterrows():
+      filepath = row['filepath']
+      article = NYTArticle.from_file(os.path.join(nyt_path, filepath))
+      lede = " ".join(article.lede)
+      body = " ".join(article.paragraphs[:GRAF_LIMIT])
+      headline = article.print_hede[0]
+      yield {"inputs": body, "targets": headline}
 
   # @property
   # def vocab_name(self):
