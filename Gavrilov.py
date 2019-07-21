@@ -13,6 +13,8 @@ from tensor2tensor.data_generators import problem
 nyt_path = './data/nyt/' # points to folder containing the years folders of the NYT Annotated corpus
 log_path = './logs/' # points to folder containing all the logs
 
+GRAF_LIMIT = 10 # this limits the body text to 10 paragraphs
+
 @registry.register_problem
 class Gavrilov(text_problems.Text2TextProblem):
   """Headline generation following along Gavrilov et all."""
@@ -28,13 +30,10 @@ class Gavrilov(text_problems.Text2TextProblem):
     return False
 
   def generate_samples(self, data_dir, tmp_dir, dataset_split):
-    # might need a little fudging after pipeline set up but should be close
     if dataset_split == problem.DatasetSplit.TRAIN:
-      paths = open(os.path.join('.',"meta_train.log"), "r")
+      paths = open(os.path.join(log_path,"meta_train.log"), "r")
     if dataset_split == problem.DatasetSplit.EVAL:
-      paths = open(os.path.join('.',"meta_dev.log"), "r")
-    # if dataset_split == problem.DatasetSplit.TEST:
-    #   train_paths = open(os.path.join(tpm_dir,"meta_test.log"), "r")
+      paths = open(os.path.join(log_path,"meta_dev.log"), "r")
 
   data_df = pd.read_csv(paths, sep=",", header=0,
                 dtype={'filepath': str,'hede_size': int,'wordcount': int,'section': str, 'sent_hede': float, 'sent_lede': float, 'sent_body': float})
@@ -42,9 +41,9 @@ class Gavrilov(text_problems.Text2TextProblem):
      filepath = row['filepath']
      article = NYTArticle.from_file(os.path.join(nyt_path, filepath))
      lede = " ".join(article.lede)
-     # body = " ".join(article.paragraphs) # not using for now
+     body = " ".join(article.paragraphs[:GRAF_LIMIT]) 
      headline = article.print_hede[0]
-     yield {"inputs": lede, "targets": headline}
+     yield {"inputs": body, "targets": headline}
 
   # @property
   # def vocab_name(self):
