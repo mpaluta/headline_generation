@@ -6,6 +6,7 @@ import csv
 import datetime
 import xml.etree.ElementTree as ET
 from nltk import word_tokenize
+from nltk.tokenize import RegexpTokenizer
 from typing import Sequence, Iterable, Optional, Dict, Any, Union, TextIO
 from attr import attrs, attrib, asdict
 
@@ -95,7 +96,8 @@ class NYTArticle:
 
     def get_meta(self):
         # grabs meta data to write to the meta log file
-        hede_words = word_tokenize(self.print_hede[0])
+        tokenizer = RegexpTokenizer(r'\w+')
+        hede_words = tokenizer.tokenize(self.print_hede[0])
         return(len(hede_words), self.descriptors, self.wordcount)
   
     def pass_filters(self):
@@ -103,12 +105,18 @@ class NYTArticle:
         keep = False
         if self.wordcount and self.print_hede: # fails filter in cases of empty fields
             meets_wc = int(self.wordcount) >= 20 and int(self.wordcount) <= 2000 # from Gavrilov et al
-            words = word_tokenize(self.print_hede[0])
+            tokenizer = RegexpTokenizer(r'\w+')
+            words = tokenizer.tokenize(self.print_hede[0])
             meets_hede = len(words) >= 3 and len(words) <= 15 # from Gavrilov et al
+               
+            # is it an obituary?
             obit = False
-            for description in self.descriptors:
-                if "obituary" in description: 
-                    obit = True
+            description = " ".join(self.descriptors) # turn into string for easier lookup
+            description = description.lower()
+            headline = self.print_hede[0].lower()
+            if ("obitua" in description) or ("deaths" in description) or ("paid notice" in headline) or ("obitua" in headline):
+                obit = True
+
             keep = meets_wc and meets_hede and not obit
         return (keep) 
 
