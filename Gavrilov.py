@@ -13,6 +13,7 @@ from attr import attrs, attrib, asdict
 import os
 from tensor2tensor.utils import registry
 from tensor2tensor.models import transformer
+from tensor2tensor.models import UniversalTransformer
 from tensor2tensor.data_generators import text_problems #, token_generator, EOS
 from tensor2tensor.data_generators import problem
 import pandas as pd
