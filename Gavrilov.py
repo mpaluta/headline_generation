@@ -63,3 +63,26 @@ class Gavrilov(text_problems.Text2TextProblem):
   @property
   def use_subword_tokenizer(self):
     return True
+
+@registry.register_hparams
+def universal_transformer_gavrilov():
+  """Base parameters for Universal Transformer + Gavrilov hyperparameters."""
+  hparams = transformer.transformer_base()
+  # To have a similar capacity to the transformer_base with 6 layers,
+  # we need to increase the size of the UT's layer
+  # since, in fact, UT has a single layer repeating multiple times.
+
+  hparams.hidden_size = 1024 # from t2t universal_tranformer_base
+  hparams.filter_size = 4096 # from t2t universal_tranformer_base
+  hparams.num_heads = 8
+  hparams.layer_preprocess_sequence = "none"
+  hparams.layer_postprocess_sequence = "adn" # add, dropout, normalize
+  hparams.layer_prepostprocess_dropout = 0.3
+  hparams.optimizer="adam_w"
+  hparams.optimizer_adam_beta1=0.9
+  hparams.optimizer_adam_beta2=0.98
+  hparams.num_encoder_layers=4
+  hparams.num_decoder_layers=4
+  hparams.learning_rate_warmup_steps = 4000
+  hparams = update_hparams_for_universal_transformer(hparams)
+  return hparams
