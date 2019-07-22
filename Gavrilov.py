@@ -43,7 +43,7 @@ class Gavrilov(text_problems.Text2TextProblem):
       filepath = row['filepath']
       article = NYTArticle.from_file(os.path.join(nyt_path, filepath))
       lede = " ".join(article.lede)
-      body = " ".join(article.paragraphs[:GRAF_LIMIT])
+      body = " ".join(article.paragraphs[:GRAF_LIMIT])        
       headline = article.print_hede[0]
       yield {"inputs": body, "targets": headline}
 

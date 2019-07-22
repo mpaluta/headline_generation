@@ -64,6 +64,8 @@ class NYTArticle:
             "./identified-content/classifier[@type='types_of_material']"))
         paragraphs = [p.text for p in root.findall(
             "./body/body.content/*[@class='full_text']/p")]
+        if len(paragraphs) > 1 and "LEAD:" in paragraphs[0]: # remove situation where lede is in paragraph 0
+            paragraphs = paragraphs[1:]
 
         # added fields
         summary = [s.text for s in root.findall("./body/body.head/summary")]
