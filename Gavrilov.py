@@ -8,7 +8,7 @@ from tensor2tensor.utils import registry
 from tensor2tensor.data_generators import text_problems #, token_generator, EOS
 from tensor2tensor.data_generators import problem
 import pandas as pd
-from .NYT_parser import NYTArticle
+from NYT_parser import NYTArticle
 # from tensor2tensor.data_generators import text_encoder
 
 # Define filepaths
@@ -33,7 +33,7 @@ class Gavrilov(text_problems.Text2TextProblem):
 
   def generate_samples(self, data_dir, tmp_dir, dataset_split):
     if dataset_split == problem.DatasetSplit.TRAIN:
-      paths = open(os.path.join(log_path,"meta_train_unfltrd.log"), "r")
+      paths = open(os.path.join(log_path,"meta_train.log"), "r")
     if dataset_split == problem.DatasetSplit.EVAL:
       paths = open(os.path.join(log_path,"meta_dev.log"), "r")
 
