@@ -33,7 +33,7 @@ class Gavrilov(text_problems.Text2TextProblem):
 
   def generate_samples(self, data_dir, tmp_dir, dataset_split):
     if dataset_split == problem.DatasetSplit.TRAIN:
-      paths = open(os.path.join(log_path,"meta_train.log"), "r")
+      paths = open(os.path.join(log_path,"meta_train_unfltrd.log"), "r")
     if dataset_split == problem.DatasetSplit.EVAL:
       paths = open(os.path.join(log_path,"meta_dev.log"), "r")
 
