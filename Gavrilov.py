@@ -233,6 +233,6 @@ def universal_transformer_gavrilov():
   hparams.num_encoder_layers=4
   hparams.num_decoder_layers=4
   hparams.learning_rate_warmup_steps = 4000
-  hparams = update_hparams_for_universal_transformer(hparams)
+  hparams = UniversalTransformer.update_hparams_for_universal_transformer(hparams)
 
   return hparams
