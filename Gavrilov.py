@@ -13,7 +13,7 @@ from attr import attrs, attrib, asdict
 import os
 from tensor2tensor.utils import registry
 from tensor2tensor.models import transformer
-from tensor2tensor.models import UniversalTransformer
+from tensor2tensor.models.research import universal_transformer
 from tensor2tensor.data_generators import text_problems #, token_generator, EOS
 from tensor2tensor.data_generators import problem
 import pandas as pd
@@ -183,7 +183,7 @@ class Gavrilov(text_problems.Text2TextProblem):
 
   def generate_samples(self, data_dir, tmp_dir, dataset_split):
     if dataset_split == problem.DatasetSplit.TRAIN:
-      paths = open(os.path.join(log_path,"meta_train_unfltrd.log"), "r")
+      paths = open(os.path.join(log_path,"meta_train.log"), "r")
     if dataset_split == problem.DatasetSplit.EVAL:
       paths = open(os.path.join(log_path,"meta_dev.log"), "r")
 
@@ -226,7 +226,7 @@ def universal_transformer_gavrilov():
   hparams.filter_size = 4096 # from t2t universal_tranformer_base
   hparams.num_heads = 8
   hparams.layer_preprocess_sequence = "none"
-  hparams.layer_postprocess_sequence = "adn" # add, dropout, normalize
+  hparams.layer_postprocess_sequence = "dan" # dropout, add, normalize
   hparams.layer_prepostprocess_dropout = 0.3
   hparams.optimizer="adam_w"
   hparams.optimizer_adam_beta1=0.9
@@ -234,6 +234,6 @@ def universal_transformer_gavrilov():
   hparams.num_encoder_layers=4
   hparams.num_decoder_layers=4
   hparams.learning_rate_warmup_steps = 4000
-  hparams = UniversalTransformer.update_hparams_for_universal_transformer(hparams)
+  hparams = universal_transformer.update_hparams_for_universal_transformer(hparams)
 
   return hparams
