@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from .NYT_parser import NYTArticle
+from NYT_parser import NYTArticle
 from tensor2tensor.utils import registry
 from tensor2tensor.data_generators import text_problems
 from tensor2tensor.data_generators import problem
