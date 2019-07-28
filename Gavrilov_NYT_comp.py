@@ -179,7 +179,7 @@ class Gavrilov(text_problems.Text2TextProblem):
   @property
   def is_generate_per_split(self):
     # generate_data will shard the data into TRAIN and EVAL for us.
-    return False
+    return True
 
   def generate_samples(self, data_dir, tmp_dir, dataset_split):
     if dataset_split == problem.DatasetSplit.TRAIN:
@@ -191,6 +191,11 @@ class Gavrilov(text_problems.Text2TextProblem):
                 dtype={'filepath': str,'hede_size': int,'wordcount': int,'section': str, 'sent_hede': float, 'sent_lede': float, 'sent_body': float})
     for index, row in data_df.iterrows():
       filepath = row['filepath']
+
+      # debug portion
+      if dataset_split == problem.DatasetSplit.EVAL:
+          print("EVAL!", filepath)
+    
       article = NYTArticle.from_file(os.path.join(nyt_path, filepath))
       lede = " ".join(article.lede)
       body = " ".join(article.paragraphs[:GRAF_LIMIT])
