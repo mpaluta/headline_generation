@@ -2,6 +2,5 @@ data
 zipped_files
 __pycache__
 .idea
-logs
 t2t_data
 .ipynb_checkpoints
