@@ -1,2 +1,2 @@
-from . import Gavrilov
+from . import Gavrilov_basic
 

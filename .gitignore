@@ -4,3 +4,5 @@ __pycache__
 .idea
 t2t_data
 .ipynb_checkpoints
+postprocess
+nohup.out
