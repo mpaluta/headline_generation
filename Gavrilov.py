@@ -27,7 +27,7 @@ class Gavrilov(text_problems.Text2TextProblem):
   @property
   def is_generate_per_split(self):
     # generate_data will shard the data into TRAIN and EVAL for us.
-    return False
+    return True
 
   def generate_samples(self, data_dir, tmp_dir, dataset_split):
     if dataset_split == problem.DatasetSplit.TRAIN:
