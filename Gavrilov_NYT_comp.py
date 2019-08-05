@@ -23,7 +23,7 @@ import pandas as pd
 nyt_path = './data/nyt/' # points to folder containing the years folders of the NYT Annotated corpus
 log_path = './logs/' # points to folder containing all the logs
 
-GRAF_LIMIT = 10 # this limits the body text to 10 paragraphs
+GRAF_LIMIT = 3 # this limits the body text to 3 paragraphs
 NO_INDEX_TERMS = 'NO INDEX TERMS FROM NYTIMES'
 
 
