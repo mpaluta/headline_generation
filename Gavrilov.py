@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from NYT_parser import NYTArticle
+from .NYT_parser import NYTArticle
 from tensor2tensor.utils import registry
 from tensor2tensor.data_generators import text_problems
 from tensor2tensor.data_generators import problem
@@ -13,7 +13,7 @@ from tensor2tensor.models import transformer
 nyt_path = './data/nyt/' # points to folder containing the years folders of the NYT Annotated corpus
 log_path = './logs/' # points to folder containing all the logs
 
-GRAF_LIMIT = 10 # this limits the body text to 10 paragraphs
+GRAF_LIMIT = 3 # this limits the body text to 10 paragraphs
 
 @registry.register_problem
 class Gavrilov(text_problems.Text2TextProblem):
